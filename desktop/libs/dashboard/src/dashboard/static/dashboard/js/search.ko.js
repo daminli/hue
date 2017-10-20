@@ -52,7 +52,7 @@ function loadSearchLayout(viewModel, json_layout) {
 function layoutToGridster(vm) {
   var numCols = 12;
   var defaultWidgetHeight = 2;
-  var layout = []
+  var layout = [];
 
   $.each(vm.columns(), function (indexY, column) {
     $.each(column.rows(), function (indexY, row) {
