@@ -641,7 +641,7 @@ ${ dashboard.layout_skeleton(suffix='search') }
       <div class="content">
         <div class="facet-field-cnt">
           <span class="spinedit-cnt">
-            <span data-bind="template: { name: 'measure-form', data: aggregate }"></span>
+            <span data-bind="template: { name: 'measure-form' }"></span>
           </span>
         </div>
 
@@ -674,7 +674,7 @@ ${ dashboard.layout_skeleton(suffix='search') }
         <strong class="hit-title" data-bind="text: field, attr: {'title': field}"></strong>
         <span class="spinedit-cnt">
           <span class="facet-field-label">${ _('Metric') }</span>
-          <span data-bind="template: { name: 'measure-form', data: aggregate }"></span>
+          <span data-bind="template: { name: 'measure-form' }"></span>
         </span>
       </div>
     </div>
@@ -2100,55 +2100,41 @@ ${ dashboard.layout_skeleton(suffix='search') }
 
 
 <script type="text/html" id="measure-form">
-  <!-- ko if: $root.isEditing -->
-  <div>
-    <!-- ko if: $data.function() != 'field' && $parent.properties -->
-      <select data-bind="options: $parent.properties.facets_form.metrics, optionsText: 'label', optionsValue: 'value', value: $data.function" class="input-small"></select>
-    <!-- /ko -->
+  ## Facet measure has a slightly different format
+  <!-- ko with: typeof properties != "undefined" ? properties.aggregate : aggregate -->
 
-    <!-- ko if: $data.function() != 'field' && $data.metrics -->
-      <select data-bind="options: $data.metrics, optionsText: 'label', optionsValue: 'value', value: $data.function" class="input-small"></select>
-    <!-- /ko -->
+    <!-- ko if: $root.isEditing -->
+    <div>
+      <select data-bind="options: metrics, optionsText: 'label', optionsValue: 'value', value: $data.function" class="input-small"></select>
 
-    <!-- ko if: $data.function() == 'percentile' -->
-      <!-- ko foreach: percentiles() -->
-        <input type="number" class="input-mini" data-bind="value: value"/>
-        <a href="javascript: void(0)" data-bind="click: function() { $parent.percentiles.remove($data); }">
-        <i class="fa fa-minus" title="${ _('Delete') }"></i>
+      <!-- ko if: $data.function() == 'percentile' -->
+        <!-- ko foreach: percentiles() -->
+          <input type="number" class="input-mini" data-bind="value: value"/>
+          <a href="javascript: void(0)" data-bind="click: function() { $parent.percentiles.remove($data); }">
+            <i class="fa fa-minus" title="${ _('Delete') }"></i>
+          </a>
+        <!-- /ko -->
+        <a href="javascript: void(0)" data-bind="click: function() { percentiles.push(ko.mapping.fromJS({'value': 50})); }">
+          <i class="fa fa-plus" title="${ _('Add') }"></i>
         </a>
       <!-- /ko -->
-      <a href="javascript: void(0)" data-bind="click: function() { percentiles.push(ko.mapping.fromJS({'value': 50})); }">
-        <i class="fa fa-plus" title="${ _('Add') }"></i>
-      </a>
-    <!-- /ko -->
 
-    ## Form to add facet
-    <!-- ko if: $data.function() != 'field' && $parent.properties -->
-      <select data-bind="options: $root.collection.template.facetFieldsNames, value: $parent.properties.facets_form.field, optionsCaption: '${ _ko('Field...') }', selectize: $root.collection.template.facetFieldsNames" class="hit-options" style="margin-bottom: 0"></select>
-    <!-- /ko -->
-    ## Added facet
-    <!-- ko if: $data.function() != 'field' && ! $parent.properties -->
       <select data-bind="options: $root.collection.template.facetFieldsNames, value: $parent.field, optionsCaption: '${ _ko('Field...') }', selectize: $root.collection.template.facetFieldsNames" class="hit-options" style="margin-bottom: 0"></select>
-    <!-- /ko -->
 
-    <div class="clearfix"></div>
+      <div class="clearfix"></div>
+      <br/>
 
-    <br/>
-
-    <!-- ko if: typeof $parent.properties != "undefined" -->
-      <input data-bind="value: formula, visible: $parent.properties.facets_form.field() == 'formula'"></input>
-    <!-- /ko -->
-    <!-- ko if: typeof $parent.properties == "undefined" -->
       <input data-bind="value: formula, visible: $parent.field() == 'formula'"></input>
+      <input data-bind="value: generated_formula" type="hidden"></input>
+    </div>
     <!-- /ko -->
-    <input data-bind="value: generated_formula" type="hidden"></input>
-  </div>
-  <!-- /ko -->
 
-  <!-- ko if: !$root.isEditing() -->
-  <div class="content" style="border: 1px solid #d8d8d8;">
-    <div data-bind="text: getPrettyMetric($data)" class="muted"></div>
-  </div>
+    <!-- ko if: !$root.isEditing() -->
+    <div class="content" style="border: 1px solid #d8d8d8;">
+      <div data-bind="text: getPrettyMetric($data)" class="muted"></div>
+    </div>
+    <!-- /ko -->
+
   <!-- /ko -->
 </script>
 
@@ -2928,7 +2914,7 @@ function getHitOption(value) {
 }
 
 function getPrettyMetric(facet) {
-  return getHitOption(facet.function()); // facet. 
+  return getHitOption(facet.function());
 }
 
 function prettifyDate(from, widget, to) {
