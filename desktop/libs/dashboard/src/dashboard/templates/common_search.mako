@@ -2809,7 +2809,7 @@ var searchViewModel;
 moment.suppressDeprecationWarnings = true;
 
 var NUMERIC_HIT_OPTIONS = [
-    { value: "unique", label: "Count" },
+    { value: "field", label: "Count" },
     { value: "unique", label: "${ _('Unique Count') }" },
     { value: "avg", label: "${ _('Average') }" },
     { value: "sum", label: "${ _('Sum') }" },
@@ -2821,17 +2821,17 @@ var NUMERIC_HIT_OPTIONS = [
     { value: "variance", label: "${ _('Variance') }" }
 ];
 var DATETIME_HIT_OPTIONS = [
-    { value: "unique", label: "Count" },
+    { value: "field", label: "Count" },
     { value: "unique", label: "${ _('Unique Count') }" },
 ];
 var ALPHA_HIT_COUNTER_OPTIONS = [
-    { value: "unique", label: "Count" },
+    { value: "field", label: "Count" },
     { value: "unique", label: "${ _('Unique Count') }" },
     { value: "min", label: "${ _('Min') }" },
     { value: "max", label: "${ _('Max') }" }
 ];
 var ALPHA_HIT_OPTIONS = [
-    { value: "unique", label: "Count" },
+    { value: "field", label: "Count" },
     { value: "unique", label: "${ _('Unique Count') }" },
     { value: "min", label: "${ _('Min') }" },
     { value: "max", label: "${ _('Max') }" }
